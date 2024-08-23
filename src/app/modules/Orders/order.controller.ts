@@ -1,3 +1,4 @@
+
 // src/orders/order.controller.ts
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
@@ -54,10 +55,12 @@ const deleteOrder = catchAsync(async (req, res) => {
   });
 });
 
-// Controller
-const getSalesGrowthRate = catchAsync(async (req, res) => {
-  const { interval } = req.query;
-  const result = await OrderServices.calculateSalesGrowth(interval as string);
+
+const salesMeasurement = catchAsync(async (req, res) => {
+  const interval = req.query.interval as string;
+  console.log('Received Interval:==========================', interval); // Debugging
+
+  const result = await OrderServices.salesMeasurement(interval);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -68,21 +71,20 @@ const getSalesGrowthRate = catchAsync(async (req, res) => {
 });
 
 
-
 // Controller
-const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
-  const { interval } = req.query;
-  const result = await OrderServices.aggregateRepeatCustomers(
-    interval as string,
-  );
+// const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
+//   const { interval } = req.query;
+//   const result = await OrderServices.aggregateRepeatCustomers(
+//     interval as string,
+//   );
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Repeat customers data fetched successfully',
-    data: result,
-  });
-});
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Repeat customers data fetched successfully',
+//     data: result,
+//   });
+// });
 
 
 export const OrderControllers = {
@@ -91,6 +93,6 @@ export const OrderControllers = {
   getOrderById,
   updateOrder,
   deleteOrder,
-  getSalesGrowthRate,
-  getRepeatCustomersOverTime
+salesMeasurement
+  // getRepeatCustomersOverTime
 };

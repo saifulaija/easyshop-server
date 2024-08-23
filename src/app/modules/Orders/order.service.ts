@@ -1,6 +1,5 @@
 // src/orders/order.service.ts
 
-import { aggregateSales } from '../../utils/aggregatesales';
 import { Customer } from '../Customers/customers.model';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
@@ -39,8 +38,6 @@ const createOrder = async (payload: TOrder) => {
   return resultOrder;
 };
 
-
-
 const getAllOrders = async () => {
   return await Order.find().populate('customer_id').populate('product_id');
 };
@@ -59,53 +56,52 @@ const deleteOrder = async (id: string) => {
   await Order.findByIdAndDelete(id);
 };
 
-const calculateSalesGrowth = async (interval: string) => {
-  const salesData = await aggregateSales(interval);
+const salesMeasurement = async (interval: string) => {
+  const matchStage = {}; // Define any matching criteria if needed
 
-  let previousSales: number | null = null;
-  return salesData.map(({ _id, totalSales }) => {
-    const growthRate =
-      previousSales !== null
-        ? ((totalSales - previousSales) / previousSales) * 100
-        : 0;
-    previousSales = totalSales;
-    return { _id, totalSales, growthRate };
-  });
-};
-
-const aggregateRepeatCustomers = async (interval: string) => {
-  const groupBy = {
-    daily: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-    monthly: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
-    quarterly: {
-      $concat: [
-        { $substr: ['$createdAt', 0, 4] },
-        '-',
-        { $toString: { $divide: [{ $month: '$createdAt' }, 4] } },
-      ],
-    },
-    yearly: { $dateToString: { format: '%Y', date: '$createdAt' } },
+  const groupStage: any = {
+    _id: null,
+    totalSales: { $sum: '$total_price' }, // Assuming 'total_price' is the field storing the sales value
   };
 
-  return Order.aggregate([
+  switch (interval) {
+    case 'daily':
+      groupStage._id = {
+        day: { $dayOfMonth: '$createdAt' },
+        month: { $month: '$createdAt' },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'monthly':
+      groupStage._id = {
+        month: { $month: '$createdAt' },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'quarterly':
+      groupStage._id = {
+        quarter: {
+          $ceil: { $divide: [{ $month: '$createdAt' }, 3] },
+        },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'yearly':
+      groupStage._id = { year: { $year: '$createdAt' } };
+      break;
+    default:
+      throw new Error('Invalid interval');
+  }
+
+  const salesData = await Order.aggregate([
+    { $match: matchStage },
+    { $group: groupStage },
     {
-      $group: {
-        _id: '$customer_id',
-        orders: { $sum: 1 },
-        firstOrderDate: { $first: '$createdAt' },
-      },
-    },
-    {
-      $match: { orders: { $gt: 1 } },
-    },
-    {
-      $group: {
-        _id: groupBy[interval],
-        repeatCustomers: { $sum: 1 },
-      },
-    },
-    { $sort: { _id: 1 } },
+      $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1, '_id.quarter': 1 },
+    }, // Adjust sorting based on the interval
   ]);
+
+  return salesData;
 };
 
 export const OrderServices = {
@@ -114,6 +110,6 @@ export const OrderServices = {
   getOrderById,
   updateOrder,
   deleteOrder,
-  calculateSalesGrowth,
-  aggregateRepeatCustomers,
+
+  salesMeasurement,
 };
