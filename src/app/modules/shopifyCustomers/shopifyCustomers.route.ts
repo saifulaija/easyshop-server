@@ -1,18 +1,15 @@
-import { Types } from 'mongoose';
+import express from 'express';
+import { ShopifyCustomerControllers } from './shopifyCustomers.controller';
 
-export type IShopifyCustomer = {
-  email: string;
-  name: string;
-  phone?: string;
-  created_at: Date;
-  default_address: {
-    district?: string;
-    thana?: string;
-    city: string;
-    country: string;
-    postal_code?: string;
-  };
-  total_spent: number;
-  orders_count: number;
-  last_order_id?: Types.ObjectId;
-};
+const router = express.Router();
+
+router.post(
+  '/create-review',
+
+
+ShopifyCustomerControllers.createShopifyCustomer,
+);
+
+
+
+export const shopifyCustomerRoutes = router;

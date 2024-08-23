@@ -1,7 +1,8 @@
-import { Schema, model, Document, Types } from 'mongoose';
-import { IShopifyCustomer } from './shopifyCustomers.route';
+import { Schema, model, Types } from 'mongoose';
+import { TShopifyCustomer } from './shopifyCustomers.interface';
 
-const ShopifyCustomerSchema = new Schema<IShopifyCustomer>({
+
+const ShopifyCustomerSchema = new Schema<TShopifyCustomer>({
   email: { type: String, required: true },
   name: { type: String, required: true },
   phone: { type: String, required: false },
@@ -17,7 +18,7 @@ const ShopifyCustomerSchema = new Schema<IShopifyCustomer>({
   orders_count: { type: Number, default: 0 },
   last_order_id: { type: Types.ObjectId, ref: 'ShopifyOrder', required: false },
 });
-export const ShopifyCustomer = model<IShopifyCustomer>(
+export const ShopifyCustomer = model<TShopifyCustomer>(
   'ShopifyCustomer',
   ShopifyCustomerSchema,
 );
