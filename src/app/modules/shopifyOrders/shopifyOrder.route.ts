@@ -10,5 +10,6 @@ router.get('/', OrderControllers.getAllOrders);
 router.get('/:id', OrderControllers.getOrderById);
 router.put('/:id', OrderControllers.updateOrder);
 router.delete('/:id', OrderControllers.deleteOrder);
+router.get('/sales-over-time', OrderControllers.getSalesOverTime);
 
-export const orderRoutes = router;
+export const shopifyOrderRoutes = router;

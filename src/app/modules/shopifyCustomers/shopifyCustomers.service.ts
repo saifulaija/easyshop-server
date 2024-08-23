@@ -1,13 +1,13 @@
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppError';
-import { Product } from '../products/product.model';
+
+
+import { Product } from '../shopifyProducts/shopifyProduct.model';
 import { TShopifyCustomer } from './shopifyCustomers.interface';
 import { ShopifyCustomer } from './shopifyCustomers.model';
 
 
 const createShopifyCustomer = async (payload: TShopifyCustomer) => {
   try {
-    const productId = payload.productId;
+    const productId = payload.email;
 
     // Create the ShopifyCustomer
     const createdShopifyCustomer = await ShopifyCustomer.create(payload);

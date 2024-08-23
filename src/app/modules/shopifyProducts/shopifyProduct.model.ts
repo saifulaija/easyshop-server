@@ -1,5 +1,5 @@
 // src/products/product.model.ts
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { TProduct } from './shopifyProduct.interface';
 
 
@@ -10,8 +10,11 @@ const ProductSchema = new Schema<TProduct>({
   category: { type: String, required: true },
   stock: { type: Number, required: true },
   images: { type: String,required:true },
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now },
-});
+ 
+},
+{
+    timestamps:true
+}
+);
 
 export const Product = model<TProduct>('Product', ProductSchema);

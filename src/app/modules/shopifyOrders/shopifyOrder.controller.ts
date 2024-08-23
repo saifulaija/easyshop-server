@@ -55,10 +55,34 @@ const deleteOrder = catchAsync(async (req, res) => {
   });
 });
 
+const getSalesOverTime = catchAsync(async (req, res) => {
+  const { interval } = req.query; // Expecting interval as a query parameter
+  const validIntervals = ['daily', 'monthly', 'quarterly', 'yearly'];
+
+  if (!validIntervals.includes(interval as string)) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message:
+        'Invalid interval. Valid options are daily, monthly, quarterly, yearly.',
+        data:null
+    });
+  }
+
+  const result = await OrderServices.aggregateSales(interval as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sales data fetched successfully',
+    data: result,
+  });
+});
+
 export const OrderControllers = {
   createOrder,
   getAllOrders,
   getOrderById,
   updateOrder,
   deleteOrder,
+  getSalesOverTime,
 };

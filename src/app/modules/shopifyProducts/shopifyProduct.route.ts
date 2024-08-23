@@ -11,4 +11,4 @@ router.get('/:id', ProductControllers.getProductById);
 router.put('/:id', ProductControllers.updateProduct);
 router.delete('/:id', ProductControllers.deleteProduct);
 
-export const productRoutes = router;
+export const shopifyProductRoutes = router;

@@ -3,10 +3,10 @@ import { Router } from 'express';
 import { AuthRoutes } from '../modules/Auth/auth.route';
 
 import { UserRoutes } from '../modules/User/user.route';
-import { ProductsRoutes } from '../modules/products/product.route';
-import { orderRoute } from '../modules/order/order.route';
-import { reviewRoutes } from '../modules/review/review.route';
-import { chartRoutes } from '../modules/chartData/chart.route';
+
+import { shopifyProductRoutes } from '../modules/shopifyProducts/shopifyProduct.route';
+import { shopifyOrderRoutes } from '../modules/shopifyOrders/shopifyOrder.route';
+import { shopifyCustomerRoutes } from '../modules/shopifyCustomers/shopifyCustomers.route';
 
 const router = Router();
 
@@ -22,20 +22,16 @@ const moduleRoutes = [
   },
 
   {
-    path: '/products',
-    route: ProductsRoutes,
+    path: '/product',
+    route: shopifyProductRoutes,
   },
   {
-    path: '/orders',
-    route: orderRoute,
+    path: '/order',
+    route: shopifyOrderRoutes,
   },
   {
-    path: '/reviews',
-    route: reviewRoutes,
-  },
-  {
-    path: '/chart',
-    route: chartRoutes,
+    path: '/customer',
+    route: shopifyCustomerRoutes,
   },
 ];
 
