@@ -1,6 +1,6 @@
 // Assuming you're using a model named Order
 
-import { Order } from "../modules/shopifyOrders/shopifyOrder.model";
+import { Order } from '../modules/Orders/order.model';
 
 // Utility function to aggregate sales data
 export const aggregateSales = async (interval: string) => {

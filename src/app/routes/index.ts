@@ -5,8 +5,9 @@ import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/User/user.route';
 
 import { shopifyProductRoutes } from '../modules/shopifyProducts/shopifyProduct.route';
-import { shopifyOrderRoutes } from '../modules/shopifyOrders/shopifyOrder.route';
+
 import { shopifyCustomerRoutes } from '../modules/Customers/customers.route';
+import { OrderRoutes } from '../modules/Orders/order.route';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ const moduleRoutes = [
   },
   {
     path: '/order',
-    route: shopifyOrderRoutes,
+    route: OrderRoutes,
   },
   {
     path: '/customer',

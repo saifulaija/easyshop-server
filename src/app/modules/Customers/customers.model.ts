@@ -23,7 +23,7 @@ const CustomerSchema = new Schema<TCustomer>(
       postal_code: { type: String, required: false },
     },
     total_spent: { type: Number, default: 0 },
-    orders: [orderSchema],
+    orders: { type: [orderSchema], default: [] },
     orders_count: { type: Number, default: 0 },
     last_order_id: {
       type: Types.ObjectId,

@@ -1,14 +1,45 @@
 // src/orders/order.service.ts
 
-import { aggregateSales } from "../../utils/aggregatesales";
-import { TOrder } from "./shopifyOrder.interface";
-import { Order } from "./shopifyOrder.model";
-
-
+import { aggregateSales } from '../../utils/aggregatesales';
+import { Customer } from '../Customers/customers.model';
+import { TOrder } from './order.interface';
+import { Order } from './order.model';
 const createOrder = async (payload: TOrder) => {
+  // Create a new order
   const order = new Order(payload);
-  return await order.save();
+  const resultOrder = await order.save();
+
+  if (resultOrder) {
+    // Find the customer document
+    const customer = await Customer.findById(payload.customer_id);
+
+    if (customer) {
+      // Update customer details
+      customer.last_order_id = resultOrder._id;
+      customer.total_spent += payload.total_price;
+
+      // Ensure orders array is initialized
+      if (!customer.orders) {
+        customer.orders = [];
+      }
+
+      // Push the new order into the orders array
+      customer.orders.push({ orderID: resultOrder._id });
+
+      // Update orders_count
+      customer.orders_count = customer.orders.length;
+
+      // Save the updated customer document
+      await customer.save();
+    } else {
+      throw new Error('Customer not found');
+    }
+  }
+
+  return resultOrder;
 };
+
+
 
 const getAllOrders = async () => {
   return await Order.find().populate('customer_id').populate('product_id');
@@ -28,7 +59,6 @@ const deleteOrder = async (id: string) => {
   await Order.findByIdAndDelete(id);
 };
 
-
 const calculateSalesGrowth = async (interval: string) => {
   const salesData = await aggregateSales(interval);
 
@@ -42,7 +72,6 @@ const calculateSalesGrowth = async (interval: string) => {
     return { _id, totalSales, growthRate };
   });
 };
-
 
 const aggregateRepeatCustomers = async (interval: string) => {
   const groupBy = {
@@ -79,8 +108,6 @@ const aggregateRepeatCustomers = async (interval: string) => {
   ]);
 };
 
-
-
 export const OrderServices = {
   createOrder,
   getAllOrders,
@@ -88,5 +115,5 @@ export const OrderServices = {
   updateOrder,
   deleteOrder,
   calculateSalesGrowth,
-  aggregateRepeatCustomers
+  aggregateRepeatCustomers,
 };
