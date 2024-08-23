@@ -1,5 +1,6 @@
 // src/orders/order.service.ts
 
+import { aggregateSales } from "../../utils/aggregatesales";
 import { TOrder } from "./shopifyOrder.interface";
 import { Order } from "./shopifyOrder.model";
 
@@ -28,30 +29,57 @@ const deleteOrder = async (id: string) => {
 };
 
 
-const aggregateSales = async (interval: string) => {
+const calculateSalesGrowth = async (interval: string) => {
+  const salesData = await aggregateSales(interval);
+
+  let previousSales: number | null = null;
+  return salesData.map(({ _id, totalSales }) => {
+    const growthRate =
+      previousSales !== null
+        ? ((totalSales - previousSales) / previousSales) * 100
+        : 0;
+    previousSales = totalSales;
+    return { _id, totalSales, growthRate };
+  });
+};
+
+
+const aggregateRepeatCustomers = async (interval: string) => {
   const groupBy = {
-    daily: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
-    monthly: { $dateToString: { format: '%Y-%m', date: '$created_at' } },
+    daily: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+    monthly: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
     quarterly: {
       $concat: [
-        { $substr: ['$created_at', 0, 4] },
+        { $substr: ['$createdAt', 0, 4] },
         '-',
-        { $toString: { $divide: [{ $month: '$created_at' }, 4] } },
+        { $toString: { $divide: [{ $month: '$createdAt' }, 4] } },
       ],
     },
-    yearly: { $dateToString: { format: '%Y', date: '$created_at' } },
+    yearly: { $dateToString: { format: '%Y', date: '$createdAt' } },
   };
 
   return Order.aggregate([
     {
       $group: {
+        _id: '$customer_id',
+        orders: { $sum: 1 },
+        firstOrderDate: { $first: '$createdAt' },
+      },
+    },
+    {
+      $match: { orders: { $gt: 1 } },
+    },
+    {
+      $group: {
         _id: groupBy[interval],
-        totalSales: { $sum: '$total_price' },
+        repeatCustomers: { $sum: 1 },
       },
     },
     { $sort: { _id: 1 } },
   ]);
 };
+
+
 
 export const OrderServices = {
   createOrder,
@@ -59,5 +87,6 @@ export const OrderServices = {
   getOrderById,
   updateOrder,
   deleteOrder,
-  aggregateSales
+  calculateSalesGrowth,
+  aggregateRepeatCustomers
 };

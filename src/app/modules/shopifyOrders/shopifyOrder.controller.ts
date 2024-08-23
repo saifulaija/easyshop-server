@@ -4,7 +4,6 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { OrderServices } from './shopifyOrder.service';
 
-
 const createOrder = catchAsync(async (req, res) => {
   const result = await OrderServices.createOrder(req.body);
   sendResponse(res, {
@@ -46,37 +45,45 @@ const updateOrder = catchAsync(async (req, res) => {
 });
 
 const deleteOrder = catchAsync(async (req, res) => {
-  const result  =await OrderServices.deleteOrder(req.params.id);
+  const result = await OrderServices.deleteOrder(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.NO_CONTENT,
     success: true,
     message: 'Order deleted successfully',
-    data:result
-  });
-});
-
-const getSalesOverTime = catchAsync(async (req, res) => {
-  const { interval } = req.query; // Expecting interval as a query parameter
-  const validIntervals = ['daily', 'monthly', 'quarterly', 'yearly'];
-
-  if (!validIntervals.includes(interval as string)) {
-    return sendResponse(res, {
-      statusCode: httpStatus.BAD_REQUEST,
-      success: false,
-      message:
-        'Invalid interval. Valid options are daily, monthly, quarterly, yearly.',
-        data:null
-    });
-  }
-
-  const result = await OrderServices.aggregateSales(interval as string);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Sales data fetched successfully',
     data: result,
   });
 });
+
+// Controller
+const getSalesGrowthRate = catchAsync(async (req, res) => {
+  const { interval } = req.query;
+  const result = await OrderServices.calculateSalesGrowth(interval as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sales growth rate data fetched successfully',
+    data: result,
+  });
+});
+
+
+
+// Controller
+const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
+  const { interval } = req.query;
+  const result = await OrderServices.aggregateRepeatCustomers(
+    interval as string,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Repeat customers data fetched successfully',
+    data: result,
+  });
+});
+
 
 export const OrderControllers = {
   createOrder,
@@ -84,5 +91,6 @@ export const OrderControllers = {
   getOrderById,
   updateOrder,
   deleteOrder,
-  getSalesOverTime,
+  getSalesGrowthRate,
+  getRepeatCustomersOverTime
 };

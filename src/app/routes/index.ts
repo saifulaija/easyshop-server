@@ -6,7 +6,7 @@ import { UserRoutes } from '../modules/User/user.route';
 
 import { shopifyProductRoutes } from '../modules/shopifyProducts/shopifyProduct.route';
 import { shopifyOrderRoutes } from '../modules/shopifyOrders/shopifyOrder.route';
-import { shopifyCustomerRoutes } from '../modules/shopifyCustomers/shopifyCustomers.route';
+import { shopifyCustomerRoutes } from '../modules/Customers/customers.route';
 
 const router = Router();
 
