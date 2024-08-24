@@ -4,10 +4,12 @@ import { AuthRoutes } from '../modules/Auth/auth.route';
 
 import { UserRoutes } from '../modules/User/user.route';
 
-import { shopifyProductRoutes } from '../modules/Products/product.route';
 
-import { shopifyCustomerRoutes } from '../modules/Customers/customers.route';
+
+
 import { OrderRoutes } from '../modules/Orders/order.route';
+import { CustomerRoutes } from '../modules/Customers/customers.route';
+import { ProductRoutes } from '../modules/Products/product.route';
 
 const router = Router();
 
@@ -24,7 +26,7 @@ const moduleRoutes = [
 
   {
     path: '/product',
-    route: shopifyProductRoutes,
+    route: ProductRoutes,
   },
   {
     path: '/order',
@@ -32,7 +34,7 @@ const moduleRoutes = [
   },
   {
     path: '/customer',
-    route: shopifyCustomerRoutes,
+    route: CustomerRoutes,
   },
 ];
 

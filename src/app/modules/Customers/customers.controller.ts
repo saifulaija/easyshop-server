@@ -15,6 +15,7 @@ const createCustomer = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const getAllCustomers = catchAsync(async (req, res) => {
   const result = await customerServices.getAllCustomers();
 
@@ -25,7 +26,17 @@ const getAllCustomers = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getNewCustomersOverTime = catchAsync(async (req, res) => {
+  const interval=req.query.interval as string
+  const result = await customerServices.trackNewCustomersOverTime(interval);
 
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'New customers added over time fetched successfully',
+    data: result,
+  });
+});
 // Controller
 // const getNewCustomersOverTime = catchAsync(async (req, res) => {
 //   const { interval } = req.query;
@@ -68,7 +79,8 @@ const getAllCustomers = catchAsync(async (req, res) => {
 
 export const customerControllers = {
 createCustomer,
-getAllCustomers
+getAllCustomers,
+getNewCustomersOverTime
   // getCustomersByCity,
   // getNewCustomersOverTime,
   // getLTVByCohorts

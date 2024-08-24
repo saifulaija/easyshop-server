@@ -1,7 +1,6 @@
 import express from 'express';
 import { customerControllers } from './customers.controller';
 
-
 const router = express.Router();
 
 router.post(
@@ -12,15 +11,12 @@ router.post(
 router.get(
   '/',
 
-  customerControllers.getAllCustomers
+  customerControllers.getAllCustomers,
 );
 
+router.get(
+  '/new-customers-over-time',
+  customerControllers.getNewCustomersOverTime,
+);
 
-// router.get(
-//   '/new-customers',
-//   ShopifyCustomerControllers.getNewCustomersOverTime,
-// );
-// router.get('/customers-by-city', ShopifyCustomerControllers.getCustomersByCity);
-// router.get('/ltv-by-cohorts', ShopifyCustomerControllers.getLTVByCohorts);
-
-export const shopifyCustomerRoutes = router;
+export const CustomerRoutes = router;

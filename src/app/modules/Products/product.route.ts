@@ -12,4 +12,4 @@ router.put('/:id', ProductControllers.updateProduct);
 router.delete('/:id', ProductControllers.deleteProduct);
 
 
-export const shopifyProductRoutes = router;
+export const ProductRoutes = router;
