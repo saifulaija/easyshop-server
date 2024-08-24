@@ -19,5 +19,9 @@ router.get(
   customerControllers.getNewCustomersOverTime,
 );
 router.get('/repeat-customers-over-time', customerControllers.getRepeatCustomersOverTime);
+router.get(
+  '/geographical-distribution',
+ customerControllers.getGeographicalDistributionOfCustomers,
+);
 
 export const CustomerRoutes = router;

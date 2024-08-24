@@ -178,11 +178,30 @@ const getAllCustomers = async () => {
    return repeatCustomersData;
  };
 
+  const getGeographicalDistribution = async () => {
+    const pipeline: PipelineStage[] = [
+      {
+        $group: {
+          _id: '$default_address.city',
+          customerCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { customerCount: -1 },
+      },
+    ];
+
+    const distributionData = await Customer.aggregate(pipeline);
+
+    return distributionData;
+  };
+
 export const customerServices = {
   createCustomer,
   getAllCustomers,
   trackNewCustomersOverTime,
-  trackRepeatCustomersOverTime
+  trackRepeatCustomersOverTime,
+  getGeographicalDistribution
   // aggregateNewCustomers,
   // aggregateCustomersByCity,
   // aggregateLTVByCohorts,

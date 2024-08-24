@@ -48,6 +48,17 @@ const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getGeographicalDistributionOfCustomers = catchAsync(async (req, res) => {
+
+  const result = await customerServices.getGeographicalDistribution();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'New customers added over time fetched successfully',
+    data: result,
+  });
+});
 
 
 export const customerControllers = {
@@ -55,6 +66,7 @@ export const customerControllers = {
   getAllCustomers,
   getNewCustomersOverTime,
   getRepeatCustomersOverTime,
+  getGeographicalDistributionOfCustomers
   // getCustomersByCity,
   // getNewCustomersOverTime,
   // getLTVByCohorts
