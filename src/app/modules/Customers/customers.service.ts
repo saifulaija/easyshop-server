@@ -129,11 +129,60 @@ const getAllCustomers = async () => {
 
    return newCustomersData;
  };
+ export const trackRepeatCustomersOverTime = async (interval: string) => {
+   const groupStage: PipelineStage = {
+     $group: {
+       _id: null,
+       repeatCustomers: {
+         $sum: {
+           $cond: [{ $gt: ['$orders_count', 1] }, 1, 0],
+         },
+       },
+     },
+   };
+
+   switch (interval) {
+     case 'daily':
+       groupStage.$group._id = {
+         day: { $dayOfMonth: '$createdAt' },
+         month: { $month: '$createdAt' },
+         year: { $year: '$createdAt' },
+       };
+       break;
+     case 'monthly':
+       groupStage.$group._id = {
+         month: { $month: '$createdAt' },
+         year: { $year: '$createdAt' },
+       };
+       break;
+     case 'quarterly':
+       groupStage.$group._id = {
+         quarter: { $ceil: { $divide: [{ $month: '$createdAt' }, 3] } },
+         year: { $year: '$createdAt' },
+       };
+       break;
+     case 'yearly':
+       groupStage.$group._id = { year: { $year: '$createdAt' } };
+       break;
+     default:
+       throw new Error('Invalid interval');
+   }
+
+   const repeatCustomersData = await Customer.aggregate([
+     { $group: groupStage.$group },
+     {
+       $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1, '_id.quarter': 1 },
+     }, // Adjust sorting based on the interval
+   ]);
+
+   return repeatCustomersData;
+ };
 
 export const customerServices = {
   createCustomer,
   getAllCustomers,
   trackNewCustomersOverTime,
+  trackRepeatCustomersOverTime
   // aggregateNewCustomers,
   // aggregateCustomersByCity,
   // aggregateLTVByCohorts,

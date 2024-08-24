@@ -37,50 +37,24 @@ const getNewCustomersOverTime = catchAsync(async (req, res) => {
     data: result,
   });
 });
-// Controller
-// const getNewCustomersOverTime = catchAsync(async (req, res) => {
-//   const { interval } = req.query;
-//   const result = await ShopifyCustomerServices.aggregateNewCustomers(
-//     interval as string,
-//   );
+const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
+  const interval = req.query.interval as string;
+  const result = await customerServices.trackRepeatCustomersOverTime(interval);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'New customers data fetched successfully',
-//     data: result,
-//   });
-// });
-
-// const getCustomersByCity = catchAsync(async (req, res) => {
-//   const result = await ShopifyCustomerServices.aggregateCustomersByCity();
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Customer distribution by city fetched successfully',
-//     data: result,
-
-//   });
-// });
-
-
-// const getLTVByCohorts = catchAsync(async (req, res) => {
-//   const result = await ShopifyCustomerServices.aggregateLTVByCohorts();
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Customer LTV by cohorts fetched successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'New customers added over time fetched successfully',
+    data: result,
+  });
+});
 
 
 export const customerControllers = {
-createCustomer,
-getAllCustomers,
-getNewCustomersOverTime
+  createCustomer,
+  getAllCustomers,
+  getNewCustomersOverTime,
+  getRepeatCustomersOverTime,
   // getCustomersByCity,
   // getNewCustomersOverTime,
   // getLTVByCohorts

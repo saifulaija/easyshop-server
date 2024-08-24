@@ -18,5 +18,6 @@ router.get(
   '/new-customers-over-time',
   customerControllers.getNewCustomersOverTime,
 );
+router.get('/repeat-customers-over-time', customerControllers.getRepeatCustomersOverTime);
 
 export const CustomerRoutes = router;
