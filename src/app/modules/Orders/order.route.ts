@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/create-order', OrderControllers.createOrder);
 router.get('/sales-measurement', OrderControllers.salesMeasurement);
+router.get('/sales-growth-rate', OrderControllers.getSalesGrowthRate);
 router.get('/', OrderControllers.getAllOrders);
 router.get('/:id', OrderControllers.getOrderById);
 router.put('/:id', OrderControllers.updateOrder);

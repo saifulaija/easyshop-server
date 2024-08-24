@@ -104,12 +104,79 @@ const salesMeasurement = async (interval: string) => {
   return salesData;
 };
 
+
+
+
+
+export const salesGrowthRate = async (interval: string) => {
+  const matchStage = {}; // Define any matching criteria if needed
+
+  const groupStage: any = {
+    _id: null,
+    totalSales: { $sum: '$total_price' },
+  };
+
+  switch (interval) {
+    case 'daily':
+      groupStage._id = {
+        day: { $dayOfMonth: '$createdAt' },
+        month: { $month: '$createdAt' },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'monthly':
+      groupStage._id = {
+        month: { $month: '$createdAt' },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'quarterly':
+      groupStage._id = {
+        quarter: {
+          $ceil: { $divide: [{ $month: '$createdAt' }, 3] },
+        },
+        year: { $year: '$createdAt' },
+      };
+      break;
+    case 'yearly':
+      groupStage._id = { year: { $year: '$createdAt' } };
+      break;
+    default:
+      throw new Error('Invalid interval');
+  }
+
+  // Fetch the sales data for the last two periods
+  const salesData = await Order.aggregate([
+    { $match: matchStage },
+    { $group: groupStage },
+    { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1, '_id.quarter': -1 } }, // Adjust sorting based on the interval
+    { $limit: 2 }, // Get the last two periods
+  ]);
+
+  if (salesData.length < 2) {
+    throw new Error('Not enough data to calculate growth rate');
+  }
+
+  const [currentPeriod, previousPeriod] = salesData;
+
+  const growthRate = Math.round((currentPeriod.totalSales - previousPeriod.totalSales) / previousPeriod.totalSales) * 100;
+
+  return {
+    interval,
+    currentPeriod: currentPeriod._id,
+    previousPeriod: previousPeriod._id,
+    growthRate,
+  };
+};
+
+
 export const OrderServices = {
   createOrder,
   getAllOrders,
   getOrderById,
   updateOrder,
   deleteOrder,
+  salesGrowthRate,
 
   salesMeasurement,
 };

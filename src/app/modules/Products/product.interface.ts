@@ -7,6 +7,7 @@ export type TProduct = {
   price: number;
   category: string;
   stock: number;
+  totalSeals?:number;
   images: string;
   created_at: Date;
   updated_at?: Date;

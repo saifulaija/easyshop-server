@@ -71,21 +71,23 @@ const salesMeasurement = catchAsync(async (req, res) => {
 });
 
 
-// Controller
-// const getRepeatCustomersOverTime = catchAsync(async (req, res) => {
-//   const { interval } = req.query;
-//   const result = await OrderServices.aggregateRepeatCustomers(
-//     interval as string,
-//   );
+const getSalesGrowthRate = catchAsync(async (req, res) => {
+  const interval = req.query.interval as string;
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Repeat customers data fetched successfully',
-//     data: result,
-//   });
-// });
+  console.log(
+    'Received Interval for Growth Rate:==========================',
+    interval,
+  ); // Debugging
 
+  const result = await OrderServices.salesGrowthRate(interval);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sales growth rate data fetched successfully',
+    data: result,
+  });
+});
 
 export const OrderControllers = {
   createOrder,
@@ -93,6 +95,7 @@ export const OrderControllers = {
   getOrderById,
   updateOrder,
   deleteOrder,
-salesMeasurement
+salesMeasurement,
+getSalesGrowthRate
   // getRepeatCustomersOverTime
 };

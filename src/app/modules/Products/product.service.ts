@@ -1,8 +1,7 @@
 // src/products/product.service.ts
 
-import { TProduct } from "./shopifyProduct.interface";
-import { Product } from "./shopifyProduct.model";
-
+import { TProduct } from './product.interface';
+import { Product } from './product.model';
 
 const createProduct = async (payload: TProduct) => {
   const product = new Product(payload);

@@ -1,6 +1,6 @@
 // src/products/product.route.ts
 import express from 'express';
-import { ProductControllers } from './shopifyProduct.controller';
+import { ProductControllers } from './product.controller';
 
 
 const router = express.Router();

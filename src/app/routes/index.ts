@@ -4,7 +4,7 @@ import { AuthRoutes } from '../modules/Auth/auth.route';
 
 import { UserRoutes } from '../modules/User/user.route';
 
-import { shopifyProductRoutes } from '../modules/shopifyProducts/shopifyProduct.route';
+import { shopifyProductRoutes } from '../modules/Products/product.route';
 
 import { shopifyCustomerRoutes } from '../modules/Customers/customers.route';
 import { OrderRoutes } from '../modules/Orders/order.route';

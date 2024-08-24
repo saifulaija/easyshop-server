@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { Product } from '../shopifyProducts/shopifyProduct.model';
+import { Product } from '../Products/product.model';
 import { TCustomer } from './customers.interface';
 import { Customer } from './customers.model';
 
