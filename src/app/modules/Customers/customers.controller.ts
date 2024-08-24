@@ -55,10 +55,22 @@ const getGeographicalDistributionOfCustomers = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'New customers added over time fetched successfully',
+    message:'Geographical distribution data fetched successfully',
     data: result,
   });
 });
+const getCustomerLifetimeValueByCohorts = catchAsync(
+  async (req, res) => {
+    const result = await customerServices.getCustomerLifetimeValueByCohorts();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Customer Lifetime Value by Cohorts data fetched successfully',
+      data: result,
+    });
+  },
+);
 
 
 export const customerControllers = {
@@ -66,7 +78,8 @@ export const customerControllers = {
   getAllCustomers,
   getNewCustomersOverTime,
   getRepeatCustomersOverTime,
-  getGeographicalDistributionOfCustomers
+  getGeographicalDistributionOfCustomers,
+  getCustomerLifetimeValueByCohorts
   // getCustomersByCity,
   // getNewCustomersOverTime,
   // getLTVByCohorts

@@ -24,4 +24,10 @@ router.get(
  customerControllers.getGeographicalDistributionOfCustomers,
 );
 
+router.get(
+  '/lifetime-value-cohorts',
+  customerControllers.getCustomerLifetimeValueByCohorts,
+);
+
+
 export const CustomerRoutes = router;

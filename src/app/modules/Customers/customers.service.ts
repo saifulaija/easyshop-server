@@ -196,12 +196,54 @@ const getAllCustomers = async () => {
     return distributionData;
   };
 
+   const getCustomerLifetimeValueByCohorts = async () => {
+     const pipeline: PipelineStage[] = [
+       {
+         $sort: { createdAt: 1 }, // Sort customers by their first purchase date
+       },
+       {
+         $group: {
+           _id: {
+             year: { $year: '$createdAt' },
+             month: { $month: '$createdAt' },
+           },
+           cohortStart: { $first: '$createdAt' },
+           customerCount: { $sum: 1 },
+           totalLifetimeValue: { $sum: '$total_spent' }, // Assuming 'total_spent' represents customer lifetime value
+         },
+       },
+       {
+         $project: {
+           cohort: {
+             $concat: [
+               { $toString: '$_id.year' },
+               '-',
+               { $toString: '$_id.month' },
+             ],
+           },
+           cohortStart: 1,
+           customerCount: 1,
+           totalLifetimeValue: 1,
+           _id: 0,
+         },
+       },
+       {
+         $sort: { cohortStart: 1 },
+       },
+     ];
+
+     const cohortData = await Customer.aggregate(pipeline);
+
+     return cohortData;
+   };
+
 export const customerServices = {
   createCustomer,
   getAllCustomers,
   trackNewCustomersOverTime,
   trackRepeatCustomersOverTime,
-  getGeographicalDistribution
+  getGeographicalDistribution,
+  getCustomerLifetimeValueByCohorts
   // aggregateNewCustomers,
   // aggregateCustomersByCity,
   // aggregateLTVByCohorts,
