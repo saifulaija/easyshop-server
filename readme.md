@@ -1,3 +1,8 @@
+
+# Live Link
+You can access the server side GitHub Link at [Easy Shop Server](https://github.com/saifulaija/easyshop-server).
+
+
 # RQ_Analytics Backend
 
 This repository contains the backend code for the RQ_Analytics project. It provides various API endpoints to prepare and visualize data from the `RQ_Analytics` MongoDB database, enabling business insights through analytical charts.
